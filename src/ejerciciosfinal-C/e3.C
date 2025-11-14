@@ -11,7 +11,7 @@ int main(void)
     float celsius = lower;
     float fahr;
 
-    printf("=== TABLA DE CONVERSION C -> F (MODIFICADA) ===\n");
+    printf("=== Tabla de conversión C -> F ===\n");
     printf(" Celsius     |   Fahrenheit\n");
     printf("----------------------------\n");
 
