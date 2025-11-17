@@ -1,11 +1,21 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import norm
+import re
 
 # ---------------------------------------------------
 # Cargar datos generados por el programa en C
 # ---------------------------------------------------
-datos = np.loadtxt("datos_yf.txt")
+def cargar_floats(path):
+    floats = []
+    patron = re.compile(r"-?\d+\.\d+")
+    with open(path) as f:
+        for linea in f:
+            for match in patron.findall(linea):
+                floats.append(float(match))
+    return np.array(floats)
+
+datos = cargar_floats("datos_yf.txt")
 
 # Media y desviación
 mu = np.mean(datos)
