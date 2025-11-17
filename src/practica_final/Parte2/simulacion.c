@@ -101,4 +101,16 @@ double simular_experimento(
         double b = a + bin_width;
         printf("[%.5f , %.5f] : %d\n", a, b, bins[i]);
     }
-    return media;}
+    return media;
+// ----------------------------------------------------
+// 5. Exportar datos a archivo
+// ----------------------------------------------------
+FILE *f = fopen("datos_yf.txt", "w");
+if (!f) {
+    printf("No se pudo crear el archivo datos_yf.txt\n");
+} else {
+    for (int i = 0; i < N; i++)
+        fprintf(f, "%.6f\n", yf[i]);
+    fclose(f);
+    printf("\nArchivo datos_yf.txt generado correctamente.\n");
+}}
