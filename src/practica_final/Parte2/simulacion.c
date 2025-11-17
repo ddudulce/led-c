@@ -106,8 +106,18 @@ double simular_experimento(
 // ----------------------------------------------------
 // 5. Exportar datos a archivo
 // ----------------------------------------------------
-printf("\n--- EXPORTANDO DATOS ---\n");
-for (int i = 0; i < N; i++) {
-    printf("%.6f\n", yf[i]);
+FILE *f = fopen("datos_yf.txt", "w");
+if (!f) {
+    printf("No se pudo crear datos_yf.txt\n");
+} else {
+    printf("ABRIENDO ARCHIVO...\n");
+
+    for (int i = 0; i < N; i++) {
+        printf("Escribiendo yf[%d] = %.6f\n", i, yf[i]);  // DEBUG
+        fprintf(f, "%.6f\n", yf[i]);
+    }
+
+    fclose(f);
+    printf("CERRADO ARCHIVO.\n");
 }
 }
