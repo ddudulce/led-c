@@ -9,81 +9,73 @@ double normal_random(double mu, double sigma) {
     double z = sqrt(-2.0 * log(u1)) * cos(2.0 * PI * u2);
     return mu + sigma * z;
 }
-double simular_experimento(double yo, double x, double vo, double delta_vo,
-                           double theta, double delta_theta,
-                           int N, int Nbins)
-{
-    srand(100);  // Semilla fija para reproducibilidad
-
-    double resultados[N];
-    double min_val = 1e9, max_val = -1e9;
-
-    printf("Simulando %d repeticiones...\n", N);
-
-    for (int i = 0; i < N; i++) {
-        // generar velocidad perturbada
-        double vo_err = normal_random(vo, delta_vo);
-
-        // generar ángulo perturbado (convertir a radianes)
-        double theta_err = normal_random(theta, delta_theta) * (PI / 180.0);
-
-        // tiempo hasta llegar a x
-        double t = x / (vo_err * cos(theta_err));
-
-        // calcular yf usando ecuaciones de movimiento
-        double yf = yo + vo_err * sin(theta_err) * t - 0.5 * 9.8 * t * t;
-
-        resultados[i] = yf;
-
-        if (yf < min_val) min_val = yf;
-        if (yf > max_val) max_val = yf;
+double simular_experimento(
+    double yo, double x, double vo, double v,
+    double theta, double delta_theta,
+    int N, int Nbins
+) {
+    double *errores = malloc(N * sizeof(double));
+    if (!errores) {
+        printf("Error: no se pudo asignar memoria.\n");
+        return 0.0;
     }
 
-    // =============================
-    //         HISTOGRAMA
-    // =============================
-    double bin_width = (max_val - min_val) / Nbins;
-    int hist[Nbins];
-
-    for (int i = 0; i < Nbins; i++)
-        hist[i] = 0;
-
+    // 1. Generar errores angulares normales
     for (int i = 0; i < N; i++) {
-        int bin = (int)((resultados[i] - min_val) / bin_width);
-        if (bin == Nbins) bin--;  // caso borde
-        hist[bin]++;
+        double err = normal_random(0.0, delta_theta);   // ruido en grados
+        err = err * (PI / 180.0);                       // convertir a radianes
+        errores[i] = err;
     }
 
-    // =============================
-    //     MEDIA Y DESVIACIÓN
-    // =============================
-    double sum = 0.0;
-    for (int i = 0; i < N; i++)
-        sum += resultados[i];
+    // 2. Encontrar valores mínimo y máximo
+    double min = errores[0], max = errores[0];
+    for (int i = 1; i < N; i++) {
+        if (errores[i] < min) min = errores[i];
+        if (errores[i] > max) max = errores[i];
+    }
 
-    double mean = sum / N;
+    // 3. Construir histograma
+    double bin_size = (max - min) / Nbins;
+    int *hist = calloc(Nbins, sizeof(int));
 
+    for (int i = 0; i < N; i++) {
+        int idx = (int)((errores[i] - min) / bin_size);
+        if (idx == Nbins) idx--;  // corrige el borde derecho
+        hist[idx]++;
+    }
+
+    // 4. Calcular media
+    double suma = 0.0;
+    for (int i = 0; i < N; i++) {
+        suma += errores[i];
+    }
+    double media = suma / N;
+
+    // 5. Calcular desviación estándar
     double var = 0.0;
-    for (int i = 0; i < N; i++)
-        var += (resultados[i] - mean) * (resultados[i] - mean);
+    for (int i = 0; i < N; i++) {
+        double d = errores[i] - media;
+        var += d * d;
+    }
+    var /= (N - 1);
+    double desviacion = sqrt(var);
 
-    var /= N;
-    double sd = sqrt(var);
-
-    // =============================
-    //        SALIDA EN TABLA
-    // =============================
-    printf("\nResultados:\n");
-    printf("Media = %.3f\n", mean);
-    printf("Desviacion estandar = %.3f\n", sd);
-
+    // 6. Imprimir resultados
+    printf("---- Resultados experimento ----\n");
+    printf("Media: %lf\n", media);
+    printf("Desviación estándar: %lf\n", desviacion);
     printf("\nHistograma:\n");
+
     for (int i = 0; i < Nbins; i++) {
-        double a = min_val + i * bin_width;
-        double b = a + bin_width;
-        printf("[%.3f , %.3f): %d\n", a, b, hist[i]);
+        double bmin = min + i * bin_size;
+        double bmax = bmin + bin_size;
+        printf("[%lf, %lf] : %d\n", bmin, bmax, hist[i]);
     }
 
-    return mean;
+    free(errores);
+    free(hist);
+
+    return desviacion;
 }
+
 
