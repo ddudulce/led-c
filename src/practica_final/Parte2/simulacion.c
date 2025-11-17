@@ -105,7 +105,7 @@ double simular_experimento(
 // ----------------------------------------------------
 // 5. Exportar datos a archivo
 // ----------------------------------------------------
-FILE *f = fopen("datos_yf.txt", "w");
+FILE *f = fopen("./datos_yf.txt", "w");
 if (!f) {
     printf("No se pudo crear el archivo datos_yf.txt\n");
 } else {
@@ -113,4 +113,5 @@ if (!f) {
         fprintf(f, "%.6f\n", yf[i]);
     fclose(f);
     printf("\nArchivo datos_yf.txt generado correctamente.\n");
-}}
+}
+}
