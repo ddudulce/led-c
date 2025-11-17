@@ -106,12 +106,8 @@ double simular_experimento(
 // ----------------------------------------------------
 // 5. Exportar datos a archivo
 // ----------------------------------------------------
-FILE *f = fopen("datos_yf.txt", "w");
-if (!f) {
-    perror("Error fopen");
-    printf("errno = %d\n", errno);
-    exit(1);
-} else {
-    printf("SI se pudo crear datos_yf.txt\n");
+printf("\n--- EXPORTANDO DATOS ---\n");
+for (int i = 0; i < N; i++) {
+    printf("%.6f\n", yf[i]);
 }
 }
