@@ -2,10 +2,11 @@
 #include <stdlib.h>
 #include <math.h>
 #include "simulacion.h"
+#define PI 3.14159265358979323846
 double normal_random(double mu, double sigma) {
     double u1 = (rand() + 1.0) / (RAND_MAX + 2.0);
     double u2 = (rand() + 1.0) / (RAND_MAX + 2.0);
-    double z = sqrt(-2.0 * log(u1)) * cos(2.0 * M_PI * u2);
+    double z = sqrt(-2.0 * log(u1)) * cos(2.0 * PI * u2);
     return mu + sigma * z;
 }
 double simular_experimento(double yo, double x, double vo, double delta_vo,
@@ -24,7 +25,7 @@ double simular_experimento(double yo, double x, double vo, double delta_vo,
         double vo_err = normal_random(vo, delta_vo);
 
         // generar ángulo perturbado (convertir a radianes)
-        double theta_err = normal_random(theta, delta_theta) * (M_PI / 180.0);
+        double theta_err = normal_random(theta, delta_theta) * (PI / 180.0);
 
         // tiempo hasta llegar a x
         double t = x / (vo_err * cos(theta_err));
