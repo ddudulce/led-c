@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "simulacion.h"
+#include <errno.h>
 
 #define PI 3.14159265358979323846
 #define G 9.8
@@ -105,13 +106,12 @@ double simular_experimento(
 // ----------------------------------------------------
 // 5. Exportar datos a archivo
 // ----------------------------------------------------
-FILE *f = fopen("./datos_yf.txt", "w");
+FILE *f = fopen("datos_yf.txt", "w");
 if (!f) {
-    printf("No se pudo crear el archivo datos_yf.txt\n");
+    perror("Error fopen");
+    printf("errno = %d\n", errno);
+    exit(1);
 } else {
-    for (int i = 0; i < N; i++)
-        fprintf(f, "%.6f\n", yf[i]);
-    fclose(f);
-    printf("\nArchivo datos_yf.txt generado correctamente.\n");
+    printf("SI se pudo crear datos_yf.txt\n");
 }
 }
