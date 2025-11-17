@@ -1,10 +1,10 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c11 -lm
+CFLAGS = -Wall -Wextra -std=c11
 
 all: main
 
 main: main.o simulacion.o
-	$(CC) $(CFLAGS) -o main main.o simulacion.o
+	$(CC) $(CFLAGS) -o main main.o simulacion.o -lm
 
 main.o: main.c simulacion.h
 simulacion.o: simulacion.c simulacion.h
